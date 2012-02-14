@@ -1,0 +1,16 @@
+dzen2*font: Ubuntu Mono-10
+dzen2*foreground: #666666
+dzen2*background: black
+xterm*faceName: Ubuntu Mono
+xterm*faceSize: 11
+urxvt.scrollBar: false
+urxvt.urgentOnBell: true
+urxvt*font: xft:Ubuntu Mono:pixelsize=15
+urxvt.background: black
+urxvt.foreground: white
+urxvt.visualBell: false
+urxvt.termName: rxvt-color
+urxvt.iso14755: false
+urxvt.iso14755_52: false
+mgm.bars:       horizontal
+mgm.stack:      vertical
