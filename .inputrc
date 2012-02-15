@@ -1,1 +1,12 @@
-.homesick/repos/dotfiles/home/.inputrc
+# Be 8 bit clean.
+set input-meta on
+set output-meta on
+
+
+# do not bell on tab-completion
+set bell-style none
+
+
+set editing-mode vi
+set keymap vi
+
