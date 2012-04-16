@@ -1,4 +1,4 @@
-include "%S/en_US.UTF-8/Compose"
+include "%L"
 
 <Multi_key> <period> <period> <period>  : "…" U2026       # HORIZONTAL ELLIPSIS
 # These two are already present for me:
