@@ -1,0 +1,135 @@
+;; -*- lisp -*-
+;; vi: set ft=lisp :
+(in-package :stumpwm)
+(load "/usr/share/stumpwm/battery-portable.lisp")
+(load "/usr/share/stumpwm/wifi.lisp")
+(load "/usr/share/stumpwm/amixer.lisp")
+
+(set-font "-misc-dejavu sans condensed-medium-r-*-*-12-*-*-*-*-*-*-*")
+
+;mode line
+(stumpwm:set-fg-color "white")
+(stumpwm:set-bg-color "black")
+
+(set-bg-color "grey20")
+(set-border-color "grey10")
+(set-msg-border-width 1)
+
+(setf *startup-message* "OH HAI!")
+
+(setf *wireless-device* "wlp2s0")
+
+; set the mouse policy to click follows mouse;
+(setf *mouse-focus-policy* :click) ;; :click, :ignore, :sloppy
+
+; run-or-raise only on current group
+(setf *run-or-raise-all-groups* nil)
+
+;; run-or-raise Web browser
+(defcommand browser () ()
+  "Start browser or switch to it, if it is already running."
+  (run-or-raise "firefox" '(:class "Firefox")))
+(define-key *root-map* (kbd "f") "browser")
+(define-key *root-map* (kbd "C-f") "browser")
+
+;; run-or-raise terminator
+(defcommand termite () ()
+  "Start termite or switch to it, if it is already running."
+  (run-or-raise "termite -e tmux" '(:instance "termite")))
+(define-key *root-map* (kbd "c") "termite")
+
+;; Brightness commands
+(defun get-brightness ()
+  (run-shell-command "xbacklight -get" t))
+
+(defcommand brighten () ()
+  "Make screen brighter."
+  (run-shell-command "xbacklight -inc 15"))
+
+(defcommand darken () ()
+  "Make screen darker."
+  (run-shell-command "xbacklight -dec 15"))
+
+(defcommand brightness () ()
+  "Show brightness"
+  (let ((value get-brightness))
+    (message (concat "brightness: " value))
+  ))
+
+
+;;;; MODE-LINE
+;; how many seconds elapse between each update of the modeline
+(setf *mode-line-timeout* 1) ; must be set *before* turning on the modeline
+(setf *mode-line-position* :top)
+
+;; Show the time in the modeline
+(setf *screen-mode-line-format* (list "%B %I" '(:eval ())))
+
+; toggle mode-line
+(define-key *root-map* (kbd ",") "mode-line")
+
+;;;; WINDOWS
+(setf *maxsize-border-width* 3)
+(set-frame-outline-width 1)
+(set-focus-color   "dimgray")
+(set-unfocus-color "grey10")
+(set-normal-gravity :center)
+(setf *normal-border-width* 3)
+(setf *window-border-style* :thin)  ; thick,thin,none,tight
+
+; bind C-t C-r to windowlist (default to C-t ")
+(define-key *root-map* (kbd "C-r") "windowlist")
+
+; message window, input window
+(setf *message-window-gravity* :center)
+(setf *input-window-gravity* :center)
+
+(defcommand go-to-browser-new-tab () ()
+  (browser)
+  (send-meta-key (current-screen) (kbd "t")) ; switch to new tab
+  )
+
+(defcommand postbox () ()
+            (run-commands
+              "vsplit"
+              "resize 0 150"))
+(defcommand aside-r () ()
+						(run-commands
+							"hsplit"
+							"resize 300 0"))
+
+(defcommand aside-l () ()
+						(run-commands
+							"hsplit"
+							"move-window right"
+							"resize 300 0"))
+
+(define-key *root-map* (kbd "RET") "go-to-browser-new-tab")
+
+(define-key *root-map* (kbd "h") "move-focus left")
+(define-key *root-map* (kbd "j") "move-focus down")
+(define-key *root-map* (kbd "k") "move-focus up")
+(define-key *root-map* (kbd "l") "move-focus right")
+(define-key *root-map* (kbd "H") "move-window left")
+(define-key *root-map* (kbd "J") "move-window down")
+(define-key *root-map* (kbd "K") "move-window up")
+(define-key *root-map* (kbd "L") "move-window right")
+(define-key *root-map* (kbd "x") "delete")
+(define-key *root-map* (kbd "X") "kill")
+(define-key *root-map* (kbd "-") "vsplit")
+(define-key *root-map* (kbd "|") "hsplit")
+(define-key *root-map* (kbd "_") "fclear")
+(define-key *root-map* (kbd "=") "postbox")
+(define-key *root-map* (kbd "<") "aside-l")
+(define-key *root-map* (kbd ">") "aside-r")
+
+
+; Volume
+(define-key *top-map* 
+  (kbd "XF86AudioRaiseVolume") "amixer-master-1+")
+(define-key *top-map* 
+  (kbd "XF86AudioLowerVolume") "amixer-master-1-")
+(define-key *top-map* 
+  (kbd "XF86AudioMute") "amixer-master-toggle")
+
+
