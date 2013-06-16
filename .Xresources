@@ -5,7 +5,7 @@ xterm*faceName: Ubuntu Mono
 xterm*faceSize: 11
 urxvt.scrollBar: false
 urxvt.urgentOnBell: true
-urxvt*font: xft:Ubuntu Mono:pixelsize=15
+urxvt*font: xft:Meslo LG L:size=9
 urxvt.background: black
 urxvt.foreground: white
 urxvt.visualBell: false
@@ -14,3 +14,11 @@ urxvt.iso14755: false
 urxvt.iso14755_52: false
 mgm.bars:       horizontal
 mgm.stack:      vertical
+
+
+urxvt*scrollBar: false
+urxvt*saveLines: 500
+urxvt*pointerBlank: true
+
+urxvt*foreground:       #dddddd
+urxvt*background:       #333333
