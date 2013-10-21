@@ -2,7 +2,6 @@
 ;; vi: set ft=lisp :
 (in-package :stumpwm)
 (load "/usr/share/stumpwm/battery-portable.lisp")
-(load "/usr/share/stumpwm/wifi.lisp")
 (load "/usr/share/stumpwm/amixer.lisp")
 
 (set-font "-misc-dejavu sans condensed-medium-r-*-*-12-*-*-*-*-*-*-*")
@@ -16,8 +15,6 @@
 (set-msg-border-width 1)
 
 (setf *startup-message* "OH HAI!")
-
-(setf *wireless-device* "wlp2s0")
 
 ; set the mouse policy to click follows mouse;
 (setf *mouse-focus-policy* :click) ;; :click, :ignore, :sloppy
@@ -39,8 +36,6 @@
 (define-key *root-map* (kbd "c") "termite")
 
 ;; Brightness commands
-(defun get-brightness ()
-  (run-shell-command "xbacklight -get" t))
 
 (defcommand brighten () ()
   "Make screen brighter."
@@ -52,9 +47,28 @@
 
 (defcommand brightness () ()
   "Show brightness"
-  (let ((value get-brightness))
+  (let ((value (run-shell-command "xbacklight -get" t)))
     (message (concat "brightness: " value))
   ))
+
+(defcommand darkenshow () ()
+  "Darken and display brightness"
+  (run-commands "darken" "brightness"))
+
+(defcommand brightenshow () ()
+  "Brighten and display brightness"
+  (run-commands "brighten" "brightness"))
+
+
+(define-keysym #x1008ff02 "XF86MonBrightnessUp")
+(define-keysym #x1008ff03 "XF86MonBrightnessDown")
+
+(define-key *top-map* 
+  (kbd "XF86MonBrightnessUp") "brightenshow")
+
+(define-key *top-map* 
+  (kbd "XF86MonBrightnessDown") "darkenshow")
+
 
 
 ;;;; MODE-LINE
