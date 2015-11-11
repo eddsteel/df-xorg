@@ -8,3 +8,7 @@ set bell-style none
 set editing-mode emacs
 set keymap emacs
 
+set colored-stats on
+
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
