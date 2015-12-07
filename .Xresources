@@ -1,24 +1,28 @@
-dzen2*font: Ubuntu Mono-10
-dzen2*foreground: #666666
-dzen2*background: black
-xterm*faceName: Ubuntu Mono
-xterm*faceSize: 11
-urxvt.scrollBar: false
-urxvt.urgentOnBell: true
-urxvt*font: xft:Meslo LG L:size=9
-urxvt.background: black
-urxvt.foreground: white
-urxvt.visualBell: false
-urxvt.termName: rxvt-color
-urxvt.iso14755: false
-urxvt.iso14755_52: false
-mgm.bars:       horizontal
-mgm.stack:      vertical
-
-
-urxvt*scrollBar: false
-urxvt*saveLines: 500
+xterm*faceName:     Droid Sans Mono:style=Regular:size=12
+xterm*background:   #222222
+xterm*foreground:   #cccccc
+xterm*saveLines:    10000
+xterm*color1:       #ff6040
+xterm*color9:       #ff2B00
+xterm*color2:       #80ff40
+xterm*color10:       #54ff00
+xterm*color3:       #efff40
+xterm*color11:      #d3ff00
+xterm*color4:       #40dfff
+xterm*color12:      #00d3ff
+xterm*color5:       #ff4090
+xterm*color13:      #ff00d3
+xterm*color6:       #40ffB0
+xterm*color14:      #00ff96
+xterm*color7:       #bbbbbb
+xterm*color8:       #444444
+xterm*metaSendsEscape: true
+urxvt*background:   #222222
+urxvt*font:         xft:Droid Sans Mono:size=12:style=Regular
+urxvt*foreground:   #cccccc
 urxvt*pointerBlank: true
-
-urxvt*foreground:       #dddddd
-urxvt*background:       #333333
+urxvt*saveLines:    500
+urxvt*scrollBar:    false
+urxvt.termName:     rxvt-unicode-256color
+urxvt.urgentOnBell: true
+urxvt.visualBell:   false

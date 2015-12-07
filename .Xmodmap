@@ -1,5 +1,10 @@
 keycode 135 = Multi_key
 
 remove Lock = Caps_Lock
-keysym Caps_Lock = Control_L
+keycode 66 = Control_L
 add Control = Control_L
+keycode 999 = Escape
+
+keycode 36 = 0x1234
+add Control = 0x1234
+keycode any = Return
