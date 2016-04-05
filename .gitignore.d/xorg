@@ -32,3 +32,14 @@
 !/.xmonad/xmonad.hs
 !/.Xresources
 !/.xsession
+/.config/mr/
+/.config/chromium/
+/.config/google-chrome/
+/.config/pulse/
+/.config/transmission/
+/.config/unity3d/
+/.config/vcsh/
+/.config/Atlassian
+/.config/autostart
+/.config/blueman
+/.config/menus
