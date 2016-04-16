@@ -1,0 +1,2 @@
+bind "<alt>w" { "copy-clipboard" () }
+
