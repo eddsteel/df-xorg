@@ -43,3 +43,11 @@
 /.config/autostart
 /.config/blueman
 /.config/menus
+/.config/KDE
+/.config/Trolltech.conf
+/.config/deadbeef/config
+/.config/gtk-2.0
+/.config/htop
+/.config/pavucontrol.ini
+/.config/pcmanfm
+/.config/vlc/vlc-qt-interface.conf
