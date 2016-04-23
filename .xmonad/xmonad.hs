@@ -20,9 +20,6 @@ import XMonad.Prompt.XMonad
 import qualified XMonad.StackSet as W
 
 
-import System.Taffybar.Hooks.PagerHints (pagerHints)
-import System.Taffybar.XMonadLog (dbusLog)
-
 import qualified Data.Map as M
 import Data.Bits ((.|.))
 import Data.Char (toUpper)
@@ -56,9 +53,15 @@ emacs o = do
           sfx (SudoEdit s) = ["-n ", "/sudo::", s]
           sfx (Execute s) = ["-e ", s]
 
+data ScreenOp = Enlighten Int | Endarken Int
+light :: ScreenOp -> X()
+light e = run $ "light " ++ l e ++ "; ~/bin/brightness | ~/bin/osd"
+  where l (Enlighten i) = "-A " ++ show i
+        l (Endarken i)  = "-U " ++ show i
 
-data AudioOp = Louder Int | Quieter Int | MuteToggle
+data AudioOp = Louder Int | Quieter Int | MuteToggle | Mixer
 pa :: AudioOp -> X ()
+pa Mixer = run "pavucontrol"
 pa op =
   let
     toStrings (Louder n)  = ("set-sink-volume", ('+':(show n)) ++ "%")
@@ -81,7 +84,7 @@ layout = id
 
 extraKeys conf = mkKeymap conf
   [ ("S-M-e", showMe "emacs")                                            -- %! Show emacs
-  , ("S-M-w", showMe "chromium-browser")                                 -- %! Show chromium
+  , ("S-M-w", showMe "chromium")                                         -- %! Show chromium
   , ("S-M-g", showMe "google-chrome-stable")                             -- %! Show chrome (multimedia extensions)
   , ("M-c", kill)                                                        -- %! Close current window
   , ("S-M-f", sendMessage (Toggle FULL))                                 -- %! Toggle fullscreen
@@ -90,18 +93,17 @@ extraKeys conf = mkKeymap conf
   -- FUNCTION KEYS
   -- audio
   , ("<XF86AudioMute>", pa MuteToggle)                                   -- %! Mute/Unmute sound
-  , ("C-<XF86AudioMute>", run "pavucontrol")
+  , ("C-<XF86AudioMute>", pa Mixer)
   , ("<XF86AudioRaiseVolume>", pa (Louder 10))                           -- %! Increase sound volume
-  , ("C-<XF86AudioRaiseVolume>", run "pavucontrol")
+  , ("C-<XF86AudioRaiseVolume>", pa Mixer)
   , ("<XF86AudioLowerVolume>", pa (Quieter 10))                          -- %! Decrease sound volume
-  , ("C-<XF86AudioLowerVolume>", run "pavucontrol")
+  , ("C-<XF86AudioLowerVolume>", pa Mixer)
   , ("<XF86AudioMicMute>", run "amixer sset Mic toggle")                 -- %! Mute/Unmute mic
   -- brightness
-  , ("<XF86MonBrightnessDown>", run "xbacklight -9; brightness | osd")   -- %! Decrease brightness
-  , ("<XF86MonBrightnessUp>", run "xbacklight +9; brightness | osd")     -- %! Increase brightness
-  , ("C-<XF86MonBrightnessDown>", run "xbacklight -1; brightness | osd") -- %! Decrease brightness by 1
-  , ("C-<XF86MonBrightnessUp>", run "xbacklight +1; brightness | osd")   -- %! Increase brightness by 1
-
+  , ("<XF86MonBrightnessDown>", light (Endarken 9))                      -- %! Decrease brightness
+  , ("<XF86MonBrightnessUp>", light (Enlighten 9))                       -- %! Increase brightness
+  , ("C-<XF86MonBrightnessDown>", light (Endarken 1))                    -- %! Decrease brightness by 1
+  , ("C-<XF86MonBrightnessUp>", light (Enlighten 1))                     -- %! Increase brightness by 1
   -- display toggle
   , ("<XF86Display>", run "tootch.sh toggle")                            -- %! Toggle bluetooth
   -- wireless toggle seems to be hardware-level
@@ -159,7 +161,6 @@ main = do
   let pp = defaultPP
   xmonad $
     ewmh $
---    pagerHints $
     defaultConfig
     { modMask = mod4Mask
     , normalBorderColor  = "#777777"
