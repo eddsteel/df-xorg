@@ -11,10 +11,13 @@ xcape -e 'Shift_L=parenleft;Shift_R=parenright;Control_L=Escape;0x1234=Return'
 eval `dbus-launch --auto-syntax`
 eval `gpg-agent --daemon`
 
-dropbox &
-
 xcompmgr &
-taffybar &
+dropbox &
+redshift &
+~/.cabal/bin/taffybar &
+pasystray &
+blueberry-tray &
+redshift &
 
 xsetroot -cursor_name left_ptr
 
