@@ -59,9 +59,10 @@ light e = run $ "light " ++ l e ++ "; ~/bin/brightness | ~/bin/osd"
   where l (Enlighten i) = "-A " ++ show i
         l (Endarken i)  = "-U " ++ show i
 
-data AudioOp = Louder Int | Quieter Int | MuteToggle | Mixer
+data AudioOp = Louder Int | Quieter Int | MuteToggle | Mixer | MicToggle
 pa :: AudioOp -> X ()
 pa Mixer = run "pavucontrol"
+pa MicToggle = run "pactl set-source-mute 2 toggle" -- just going to hardcode this mofo
 pa op =
   let
     toStrings (Louder n)  = ("set-sink-volume", ('+':(show n)) ++ "%")
@@ -93,12 +94,12 @@ extraKeys conf = mkKeymap conf
   -- FUNCTION KEYS
   -- audio
   , ("<XF86AudioMute>", pa MuteToggle)                                   -- %! Mute/Unmute sound
-  , ("C-<XF86AudioMute>", pa Mixer)
+  , ("C-<XF86AudioMute>", pa Mixer)                                      -- %! Pulse Audio Mixer
   , ("<XF86AudioRaiseVolume>", pa (Louder 10))                           -- %! Increase sound volume
-  , ("C-<XF86AudioRaiseVolume>", pa Mixer)
+  , ("C-<XF86AudioRaiseVolume>", pa Mixer)                               -- %! Pulse Audio Mixer
   , ("<XF86AudioLowerVolume>", pa (Quieter 10))                          -- %! Decrease sound volume
-  , ("C-<XF86AudioLowerVolume>", pa Mixer)
-  , ("<XF86AudioMicMute>", run "amixer sset Mic toggle")                 -- %! Mute/Unmute mic
+  , ("C-<XF86AudioLowerVolume>", pa Mixer)                               -- %! Pulse Audio Mixer
+  , ("<XF86AudioMicMute>", pa MicToggle)                                 -- %! Mute/Unmute mic
   -- brightness
   , ("<XF86MonBrightnessDown>", light (Endarken 9))                      -- %! Decrease brightness
   , ("<XF86MonBrightnessUp>", light (Enlighten 9))                       -- %! Increase brightness
