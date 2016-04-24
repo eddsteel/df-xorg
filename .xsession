@@ -17,7 +17,7 @@ redshift &
 ~/.cabal/bin/taffybar &
 pasystray &
 blueberry-tray &
-redshift &
+redshift-gtk &
 
 xsetroot -cursor_name left_ptr
 
