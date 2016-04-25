@@ -39,7 +39,7 @@ run s = safeSpawn s []
 -- Some X
 data SShot = All | Sel
 screenshot :: SShot -> X ()
-screenshot t = run $ "sleep 1; scrot " ++ s t ++ "'%F-%s.png' -e 'mv $f ~/Desktop'"
+screenshot t = unsafeSpawn $ "sleep 1; scrot " ++ s t ++ "'%F-%s.png' -e 'mv $f ~/Desktop'"
   where s All = ""
         s Sel = "-s "
 
@@ -55,14 +55,14 @@ emacs o = do
 
 data ScreenOp = Enlighten Int | Endarken Int
 light :: ScreenOp -> X()
-light e = run $ "light " ++ l e ++ "; ~/bin/brightness | ~/bin/osd"
+light e = unsafeSpawn $ "light " ++ l e ++ "; ~/bin/brightness | ~/bin/osd"
   where l (Enlighten i) = "-A " ++ show i
         l (Endarken i)  = "-U " ++ show i
 
 data AudioOp = Louder Int | Quieter Int | MuteToggle | Mixer | MicToggle
 pa :: AudioOp -> X ()
-pa Mixer = run "pavucontrol"
-pa MicToggle = run "pactl set-source-mute 2 toggle" -- just going to hardcode this mofo
+pa Mixer = safeSpawn "pavucontrol" []
+pa MicToggle = safeSpawn "pactl" ["set-source-mute", "2", "toggle"] -- just going to hardcode this mofo
 pa op =
   let
     toStrings (Louder n)  = ("set-sink-volume", ('+':(show n)) ++ "%")
@@ -72,7 +72,7 @@ pa op =
   in do
     mixOut <- runProcessWithInput "pactl" ["list", "short", "sinks"] []
     let mixer = (takeWhile isNumber . last . lines) mixOut
-    run $ (concat . intersperse " ") ["pactl", command, mixer, effect]
+    safeSpawn "pactl" [command, mixer, effect]
 
 layout = id
          . smartBorders
@@ -106,20 +106,20 @@ extraKeys conf = mkKeymap conf
   , ("C-<XF86MonBrightnessDown>", light (Endarken 1))                    -- %! Decrease brightness by 1
   , ("C-<XF86MonBrightnessUp>", light (Enlighten 1))                     -- %! Increase brightness by 1
   -- display toggle
-  , ("<XF86Display>", run "tootch.sh toggle")                            -- %! Toggle bluetooth
+  , ("<XF86Display>", unsafeSpawn "~/bin/tootch.sh toggle")              -- %! Toggle bluetooth
   -- wireless toggle seems to be hardware-level
   -- settings
-  , ("<XF86Tools>", emacs (SudoEdit "/etc/nixos/configuration.nix"))     -- %! Edit OS configuration
+  , ("<XF86Tools>", emacs (SudoEdit ""))     -- %! Edit OS configuration
   , ("S-<XF86Tools>", emacs (Edit "~/.xmonad/xmonad.hs"))                -- %! Edit WM configuration
   , ("S-C-<XF86Tools>", emacs (Edit "~/.emacs.d/init.el"))               -- %! Edit Editor configuration
   -- search
-  , ("<XF86Search>", run "~/.local/bin/b radio seek; sleep 0.2; ~/.local/bin/b radio np | osd")
-  , ("S-<XF86Search>", run "~/.local/bin/b radio kees; sleep 0.2; ~/.local/bin/b radio np | osd")
-  , ("C-<XF86Search>", run "~/.local/bin/b radio np | osd")
-  , ("S-C-<XF86Search>", run "~/.local/bin/b radio off")
+  , ("<XF86Search>", unsafeSpawn "~/.local/bin/b radio seek; sleep 0.2; ~/.local/bin/b radio np | ~/bin/osd")
+  , ("S-<XF86Search>", unsafeSpawn "~/.local/bin/b radio kees; sleep 0.2; ~/.local/bin/b radio np | ~/bin/osd")
+  , ("C-<XF86Search>", unsafeSpawn "~/.local/bin/b radio np | ~/bin/osd")
+  , ("S-C-<XF86Search>", unsafeSpawn "~/.local/bin/b radio off")
 
   -- window list
-  , ("<XF86LaunchA>", run "~/bin/batteries | ~/bin/osd")                 -- %! Show battery state
+  , ("<XF86LaunchA>", unsafeSpawn "~/bin/batteries | ~/bin/osd")                 -- %! Show battery state
 
   , ("M-r", shellPrompt promptConfig)                                    -- %! Shell prompt
   , ("C-M-r", prompt "~/.local/bin/b" promptConfig)                      -- %! Brainzo prompt
