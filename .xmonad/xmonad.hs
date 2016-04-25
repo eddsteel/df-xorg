@@ -11,7 +11,7 @@ import XMonad.Hooks.FadeWindows
 import XMonad.Layout.NoBorders
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
-import XMonad.Actions.WindowGo (runOrRaise, className, (<||>))
+import XMonad.Actions.WindowGo (raiseNextMaybe, className, (<||>))
 import XMonad.Util.EZConfig
 import XMonad.Util.Run
 import XMonad.Prompt
@@ -28,13 +28,13 @@ titleCase s = (toUpper . head) s : tail s
 
 -- TODO sleep inhibit through xset s off/ turn off redshift
 
-showMe :: String -> X ()
-showMe s = do
-  runOrRaise s (className =? titleCase s <||> className =? s)
+showMe  :: String -> [String] -> X ()
+showMe s as = do
+  raiseNextMaybe (safeSpawn s as) (className =? titleCase s <||> className =? s)
   windows W.swapMaster
 
-run :: String -> X ()
-run = spawn
+run  :: String -> X ()
+run s = safeSpawn s []
 
 -- Some X
 data SShot = All | Sel
@@ -47,7 +47,7 @@ screenshot t = run $ "sleep 1; scrot " ++ s t ++ "'%F-%s.png' -e 'mv $f ~/Deskto
 data Emacs = Edit String | SudoEdit String | Execute String
 emacs :: Emacs -> X ()
 emacs o = do
-  showMe "emacs"
+  showMe "emacs" []
   (spawn . concat) $ "emacsclient " : sfx o
     where sfx (Edit s) = ["-n ", s]
           sfx (SudoEdit s) = ["-n ", "/sudo::", s]
@@ -84,9 +84,9 @@ layout = id
     even = noBorders $ Tall 1 (3/100) (1/2)
 
 extraKeys conf = mkKeymap conf
-  [ ("S-M-e", showMe "emacs")                                            -- %! Show emacs
-  , ("S-M-w", showMe "chromium")                                         -- %! Show chromium
-  , ("S-M-g", showMe "google-chrome-stable")                             -- %! Show chrome (multimedia extensions)
+  [ ("S-M-e", showMe "emacs" [])                                         -- %! Show emacs
+  , ("S-M-w", showMe "chromium" [])                                      -- %! Show chromium
+  , ("S-M-g", showMe "google-chrome" ["www.netflix.com"])                -- %! Show chrome (multimedia extensions)
   , ("M-c", kill)                                                        -- %! Close current window
   , ("S-M-f", sendMessage (Toggle FULL))                                 -- %! Toggle fullscreen
   , ("M-`", windows W.focusDown)                                         -- %! Move focus to the next window
@@ -119,7 +119,7 @@ extraKeys conf = mkKeymap conf
   , ("S-C-<XF86Search>", run "~/.local/bin/b radio off")
 
   -- window list
-  , ("<XF86LaunchA>", run "batteries | osd")                             -- %! Show battery state
+  , ("<XF86LaunchA>", run "~/bin/batteries | ~/bin/osd")                 -- %! Show battery state
 
   , ("M-r", shellPrompt promptConfig)                                    -- %! Shell prompt
   , ("C-M-r", prompt "~/.local/bin/b" promptConfig)                      -- %! Brainzo prompt
@@ -144,18 +144,15 @@ promptConfig = defaultXPConfig
                }
 
 fading = composeAll [isUnfocused                   --> transparency 0.1
-
-                    , className =? "Google-chrome" --> opaque
+                    , className =? "google-chrome" --> opaque
                     , className =? "vlc"           --> opaque
                     , className =? "Kodi"          --> opaque
-
 
                     , fmap not isUnfocused         --> opaque
                     ]
 
 homeDesktops = composeAll
-   [ className =? "Skype" --> doShift "5"
-   , className =? "Kodi" --> doShift "4"]
+   [ className =? "Kodi" --> doShift "4"]
 
 main = do
   client <- connectSession
