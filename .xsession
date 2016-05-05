@@ -18,6 +18,7 @@ redshift &
 pasystray &
 blueberry-tray &
 redshift-gtk &
+caffeine &
 
 xsetroot -cursor_name left_ptr
 
