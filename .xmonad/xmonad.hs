@@ -26,8 +26,6 @@ import Data.Char (toUpper)
 
 titleCase s = (toUpper . head) s : tail s
 
--- TODO sleep inhibit through xset s off/ turn off redshift
-
 showMe  :: String -> [String] -> X ()
 showMe s as = do
   raiseNextMaybe (safeSpawn s as) (className =? titleCase s <||> className =? s)
