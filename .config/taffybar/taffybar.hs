@@ -70,12 +70,6 @@ mem = pollingGraphNew memCfg 1 memCallback
 
 net = netMonitorNew 5 "wlp3s0"
 
-bt = pollingLabelNew "bt" 1.0 checkBluetooth
-  where checkBluetooth = (readProcess "tootch.sh" ["status"] [])
-
-dummyL = pollingLabelNew "yo" 1.0 dummy
-  where dummy = return "yo"
-
 batterybar v
   | v > 0.9   = (1, 1, 1)
   | v > 0.1   = (ff 153, ff 153, ff 153)
@@ -94,5 +88,5 @@ main = let
   in do
       defaultTaffybar defaultTaffybarConfig {
         startWidgets = [pager]
-        , endWidgets = [dummyL, tray, clock, wea, mem, cpu, battery, mpris, note, net] --, bt]
+        , endWidgets = [tray, clock, wea, mem, cpu, battery, mpris, note, net]
         }
