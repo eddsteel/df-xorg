@@ -85,6 +85,7 @@ extraKeys conf = mkKeymap conf
   [ ("S-M-e", showMe "emacs" [])                                         -- %! Show emacs
   , ("S-M-w", showMe "chromium" [])                                      -- %! Show chromium
   , ("S-M-g", showMe "google-chrome" ["www.netflix.com"])                -- %! Show chrome (multimedia extensions)
+  , ("S-M-p", run "dmenu_run")                                           -- %! Run dmenu_run
   , ("M-c", kill)                                                        -- %! Close current window
   , ("S-M-f", sendMessage (Toggle FULL))                                 -- %! Toggle fullscreen
   , ("M-`", windows W.focusDown)                                         -- %! Move focus to the next window
