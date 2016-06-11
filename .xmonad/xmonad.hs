@@ -12,6 +12,7 @@ import XMonad.Layout.NoBorders
 import XMonad.Layout.MultiToggle
 import XMonad.Layout.MultiToggle.Instances
 import XMonad.Actions.WindowGo (raiseNextMaybe, className, (<||>))
+import XMonad.Actions.PhysicalScreens (sendToScreen)
 import XMonad.Util.EZConfig
 import XMonad.Util.Run
 import XMonad.Prompt
@@ -19,11 +20,10 @@ import XMonad.Prompt.Shell
 import XMonad.Prompt.XMonad
 import qualified XMonad.StackSet as W
 
-
 import qualified Data.Map as M
-import Data.Bits ((.|.))
 import Data.Char (toUpper)
 
+titleCase :: String -> String
 titleCase s = (toUpper . head) s : tail s
 
 showMe  :: String -> [String] -> X ()
@@ -37,7 +37,7 @@ run s = safeSpawn s []
 -- Some X
 data SShot = All | Sel
 screenshot :: SShot -> X ()
-screenshot t = unsafeSpawn $ "sleep 1; scrot " ++ s t ++ "'%F-%s.png' -e 'mv $f ~/Desktop'"
+screenshot t = unsafeSpawn $ "sleep 1; scrot " ++ s t ++ "'%F-%s.png' -e 'mv $f ~/tmp'"
   where s All = ""
         s Sel = "-s "
 
@@ -89,7 +89,8 @@ extraKeys conf = mkKeymap conf
   , ("M-c", kill)                                                        -- %! Close current window
   , ("S-M-f", sendMessage (Toggle FULL))                                 -- %! Toggle fullscreen
   , ("M-`", windows W.focusDown)                                         -- %! Move focus to the next window
-
+  , ("S-M-<Up>", sendToScreen 0)
+  , ("S-M-<Down>", sendToScreen 1)
   -- FUNCTION KEYS
   -- audio
   , ("<XF86AudioMute>", pa MuteToggle)                                   -- %! Mute/Unmute sound
@@ -105,7 +106,7 @@ extraKeys conf = mkKeymap conf
   , ("C-<XF86MonBrightnessDown>", light (Endarken 1))                    -- %! Decrease brightness by 1
   , ("C-<XF86MonBrightnessUp>", light (Enlighten 1))                     -- %! Increase brightness by 1
   -- display toggle
-  , ("<XF86Display>", unsafeSpawn "~/bin/tootch.sh toggle")              -- %! Toggle bluetooth
+  , ("C-<XF86Display>", unsafeSpawn "~/bin/tootch.sh toggle")              -- %! Toggle bluetooth
   -- wireless toggle seems to be hardware-level
   -- settings
   , ("<XF86Tools>", emacs (SudoEdit ""))     -- %! Edit OS configuration
