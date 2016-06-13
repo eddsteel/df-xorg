@@ -32,9 +32,11 @@ cpuCallback = do
 
 ff j = j / 255
 
-coral a = (1, ff 96, ff 64, a)
-green a = (ff 96, 1, ff 64, a)
-blue a  = (ff 128, 1, ff 64, a)
+rgba r g b a = (ff r, ff g, ff b, a)
+
+coral a = rgba 255 96   64 a
+green a = rgba 96  255  64 a
+blue a  = rgba 128 255  64 a
 white a = (1, 1, 1, a)
 
 colorSpan c s = "<span fgcolor='" ++ c ++ "'>" ++ s ++ "</span>"

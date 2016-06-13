@@ -1,6 +1,6 @@
 style "default" {
   fg[NORMAL]     = "#cccccc"
-  bg[NORMAL]     = "#222222"
+  bg[NORMAL]     = "#000000"
   color["red"]   = "#ff6040"
   color["blue"]  = "#40dfff"
   color["green"] = "#80FF40"
