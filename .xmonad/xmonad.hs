@@ -127,7 +127,7 @@ extraKeys conf = mkKeymap conf
     -- TODO google prompt
 
   -- exposé
-  , ("<XF86Explorer>", emacs (Edit "~/.org/home.org"))                   -- %! Edit home org file
+  , ("<XF86Explorer>", emacs (Edit "~/txt/gtd/projects.org"))            -- %! Edit projects org file
 
   , ("<Print>", screenshot All)                                          -- %! Take a screenshot
   , ("S-<Print>", screenshot Sel)                                        -- %! Screenshot window or rectangle
