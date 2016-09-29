@@ -1,5 +1,5 @@
 xterm*faceName:     Droid Sans Mono:style=Regular:size=12
-xterm*background:   #222222
+xterm*background:   #000000
 xterm*foreground:   #cccccc
 xterm*saveLines:    10000
 xterm*color1:       #ff6040
