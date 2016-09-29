@@ -131,6 +131,8 @@ extraKeys conf = mkKeymap conf
 
   , ("<Print>", screenshot All)                                          -- %! Take a screenshot
   , ("S-<Print>", screenshot Sel)                                        -- %! Screenshot window or rectangle
+
+  , ("C-S-<Pause>", unsafeSpawn "systemctl suspend")                       -- %! suspend
   ]
 
 promptConfig = defaultXPConfig
