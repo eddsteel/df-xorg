@@ -1,12 +1,5 @@
 ~/.fehbg
-setxkbmap -option 'ctrl:nocaps'
-xmodmap -e "keycode 66 = Control_L"
-xmodmap -e "add Control = Control_L"
-xmodmap -e "keycode 999 = Escape"
-xmodmap -e "keycode 36 = 0x1234"
-xmodmap -e "add Control = 0x1234"
-xmodmap -e "keycode any = Return"
-xcape -e 'Shift_L=parenleft;Shift_R=parenright;Control_L=Escape;0x1234=Return'
+~/bin/setup-keys &
 
 eval `dbus-launch --auto-syntax`
 eval `gpg-agent --daemon`
