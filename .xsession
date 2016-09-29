@@ -4,6 +4,7 @@
 eval `dbus-launch --auto-syntax`
 eval `gpg-agent --daemon`
 
+emacs --daemon &
 xcompmgr &
 dropbox &
 redshift &
