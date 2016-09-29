@@ -164,7 +164,7 @@ main = do
     defaultConfig
     { modMask = mod4Mask
     , normalBorderColor  = "#777777"
-    , focusedBorderColor = "#FF6040"
+    , focusedBorderColor = "#000000"
     , keys = \x -> extraKeys x `M.union` keys defaultConfig x
     , layoutHook = layout
     , manageHook = homeDesktops <+> manageDocks
