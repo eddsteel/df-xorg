@@ -31,6 +31,14 @@ showMe s as = do
   raiseNextMaybe (safeSpawn s as) (className =? titleCase s <||> className =? s)
   windows W.swapMaster
 
+showMeEmacs :: X ()
+showMeEmacs = do
+  raiseNextMaybe spawn find
+  windows W.swapMaster
+  where
+    spawn = safeSpawn "emacsclient" ["-c", "-a", "emacs"]
+    find = className =? "Emacs"
+
 run  :: String -> X ()
 run s = safeSpawn s []
 
@@ -45,7 +53,7 @@ screenshot t = unsafeSpawn $ "sleep 1; scrot " ++ s t ++ "'%F-%s.png' -e 'mv $f 
 data Emacs = Edit String | SudoEdit String | Execute String
 emacs :: Emacs -> X ()
 emacs o = do
-  showMe "emacs" []
+  showMeEmacs
   (spawn . concat) $ "emacsclient " : sfx o
     where sfx (Edit s) = ["-n ", s]
           sfx (SudoEdit s) = ["-n ", "/sudo::", s]
@@ -82,7 +90,7 @@ layout = id
     even = noBorders $ Tall 1 (3/100) (1/2)
 
 extraKeys conf = mkKeymap conf
-  [ ("S-M-e", showMe "emacs" [])                                         -- %! Show emacs
+  [ ("S-M-e", showMeEmacs)
   , ("S-M-w", showMe "chromium" [])                                      -- %! Show chromium
   , ("S-M-g", showMe "google-chrome" ["www.netflix.com"])                -- %! Show chrome (multimedia extensions)
   , ("S-M-p", run "dmenu_run")                                           -- %! Run dmenu_run
