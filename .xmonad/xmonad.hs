@@ -153,12 +153,11 @@ promptConfig = defaultXPConfig
                , font = "xft:Droid Sans Mono-12"
                }
 
-fading = composeAll [isUnfocused                   --> transparency 0.1
-                    , className =? "google-chrome" --> opaque
-                    , className =? "vlc"           --> opaque
-                    , className =? "Kodi"          --> opaque
-
-                    , fmap not isUnfocused         --> opaque
+fading = composeAll [isUnfocused                                   --> transparency 0.1
+                    , className =? "google-chrome"                 --> opaque
+                    , className =? "vlc" <||> className =? "cvlc"  --> opaque
+                    , className =? "Kodi"                          --> opaque
+                    , fmap not isUnfocused                         --> opaque
                     ]
 
 homeDesktops = composeAll
@@ -166,14 +165,13 @@ homeDesktops = composeAll
 
 main = do
   client <- connectSession
-  let pp = defaultPP
   xmonad $
     ewmh $
-    defaultConfig
+    def
     { modMask = mod4Mask
     , normalBorderColor  = "#777777"
     , focusedBorderColor = "#000000"
-    , keys = \x -> extraKeys x `M.union` keys defaultConfig x
+    , keys = \x -> extraKeys x `M.union` keys def x
     , layoutHook = layout
     , manageHook = homeDesktops <+> manageDocks
     , logHook = fadeWindowsLogHook fading
