@@ -90,5 +90,4 @@ main = let
   in do
       defaultTaffybar defaultTaffybarConfig {
         startWidgets = [pager]
-        , endWidgets = [tray, clock, wea, mem, cpu, battery, mpris, note, net]
-        }
+        , endWidgets = [tray, clock, wea, mem, cpu, battery, mpris, net, note] }
