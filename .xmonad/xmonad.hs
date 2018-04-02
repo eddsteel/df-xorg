@@ -1,4 +1,6 @@
 {-# LANGUAGE DeriveDataTypeable #-}
+import Data.List(intersperse)
+import Data.List.Split(splitOn)
 import Data.Char (toUpper)
 import qualified Data.Map as M
 import XMonad
@@ -25,9 +27,12 @@ titleCase :: String -> String
 titleCase s = (toUpper . head) s : tail s
 
 showMe  :: String -> [String] -> X ()
-showMe s as = do
-  raiseNextMaybe (safeSpawn s as) (className =? titleCase s <||> className =? s)
-  windows swapMaster
+showMe s as =
+  let
+    titleSpaceCase = concat . intersperse " " . fmap titleCase . splitOn "-"
+  in do
+    raiseNextMaybe (safeSpawn s as) (className =? s <||> className =? titleSpaceCase s)
+    windows swapMaster
 
 showMeEmacs :: X ()
 showMeEmacs = do
@@ -82,67 +87,57 @@ toggleFS = do
 
 extraKeys = (flip mkKeymap)
   [ ("S-M-e", showMeEmacs)
-  , ("S-M-w", showMe "chromium" [])                              -- %! Show chromium
-  , ("S-M-g", showMe "google-chrome" ["www.netflix.com"])        -- %! Show chrome (multimedia extensions)
+  , ("S-C-e", run "~/.emacs_anywhere/bin/run")                       -- %! Edit selection in Emacs
+  , ("S-M-w", showMe "firefox-developer-edition" [])                 -- %! Show chromium
+  , ("S-M-g", showMe "firefox" ["www.netflix.com"])                  -- %! Show chrome (multimedia extensions)
   , ("S-M-k", showMe "kodi" [])
-  , ("S-M-p", run "dmenu_run")                                   -- %! Run dmenu_run
-  , ("M-w", kill)                                                -- %! Close current window
-  , ("S-M-f", toggleFS)                                          -- %! Toggle fullscreen
-  , ("S-M-<Escape>", sendMessage ToggleStruts)                   -- %! Toggle panel display
-  , ("M-`", windows focusDown)                                   -- %! Move focus to the next window
-  , ("S-C-M-<Left>", sendToScreen 0)                             -- %! Move focused window to previous display
-  , ("S-C-M-<Right>", sendToScreen 1)                            -- %! Move focused window to next display
+  , ("S-M-p", run "dmenu_run")                                       -- %! Run dmenu_run
+  , ("M-w", kill)                                                    -- %! Close current window
+  , ("S-M-f", toggleFS)                                              -- %! Toggle fullscreen
+  , ("S-M-<Escape>", sendMessage ToggleStruts)                       -- %! Toggle panel display
+  , ("M-`", windows focusDown)                                       -- %! Move focus to the next window
+  , ("S-C-M-<Left>", sendToScreen 0)                                 -- %! Move focused window to previous display
+  , ("S-C-M-<Right>", sendToScreen 1)                                -- %! Move focused window to next display
   -- FUNCTION KEYS
   -- audio
-  , ("<XF86AudioMute>",          brainzo ["audio", "mute"])      -- %! Mute/Unmute sound
-  , ("C-<XF86AudioMute>",        brainzo ["audio", "mixer"])     -- %! Pulse Audio Mixer
-  , ("<XF86AudioRaiseVolume>",   brainzo ["audio", "louder", "10"]) -- %! Increase sound volume
-  , ("C-<XF86AudioRaiseVolume>", brainzo ["audio", "mixer"])     -- %! Pulse Audio Mixer
+  , ("<XF86AudioMute>",          brainzo ["audio", "mute"])          -- %! Mute/Unmute sound
+  , ("C-<XF86AudioMute>",        brainzo ["audio", "mixer"])         -- %! Pulse Audio Mixer
+  , ("<XF86AudioRaiseVolume>",   brainzo ["audio", "louder", "10"])  -- %! Increase sound volume
+  , ("C-<XF86AudioRaiseVolume>", brainzo ["audio", "mixer"])         -- %! Pulse Audio Mixer
   , ("<XF86AudioLowerVolume>",   brainzo ["audio", "quieter", "10"]) -- %! Decrease sound volume
-  , ("C-<XF86AudioLowerVolume>", brainzo ["audio", "mixer"])     -- %! Pulse Audio Mixer
-  , ("<XF86AudioMicMute>",       brainzo ["audio", "micmute"])      -- %! Mute/Unmute mic
-  -- , ("<XF86AudioMute>",          shell BA.mute)                  -- %! Mute/Unmute sound
-  -- , ("C-<XF86AudioMute>",        shell BA.mixer)                 -- %! Pulse Audio Mixer
-  -- , ("<XF86AudioRaiseVolume>",   shell $ BA.louder 10)           -- %! Increase sound volume
-  -- , ("C-<XF86AudioRaiseVolume>", shell BA.mixer)                 -- %! Pulse Audio Mixer
-  -- , ("<XF86AudioLowerVolume>",   shell $ BA.quieter 10)          -- %! Decrease sound volume
-  -- , ("C-<XF86AudioLowerVolume>", shell BA.mixer)                 -- %! Pulse Audio Mixer
-  -- , ("<XF86AudioMicMute>",       shell BA.micmute)               -- %! Mute/Unmute mic
+  , ("C-<XF86AudioLowerVolume>", brainzo ["audio", "mixer"])         -- %! Pulse Audio Mixer
+  , ("<XF86AudioMicMute>",       brainzo ["audio", "micmute"])       -- %! Mute/Unmute mic
+
   -- brightness
-  , ("<XF86MonBrightnessDown>", light (Endarken 9))              -- %! Decrease brightness
-  , ("<XF86MonBrightnessUp>", light (Enlighten 9))               -- %! Increase brightness
-  , ("C-<XF86MonBrightnessDown>", light (Endarken 1))            -- %! Decrease brightness by 1
-  , ("C-<XF86MonBrightnessUp>", light (Enlighten 1))             -- %! Increase brightness by 1
+  , ("<XF86MonBrightnessDown>", light (Endarken 9))                  -- %! Decrease brightness
+  , ("<XF86MonBrightnessUp>", light (Enlighten 9))                   -- %! Increase brightness
+  , ("C-<XF86MonBrightnessDown>", light (Endarken 1))                -- %! Decrease brightness by 1
+  , ("C-<XF86MonBrightnessUp>", light (Enlighten 1))                 -- %! Increase brightness by 1
   -- display toggle
-  , ("C-<XF86Display>", unsafeSpawn "~/bin/tootch.sh")           -- %! Toggle bluetooth
+  , ("C-<XF86Display>", unsafeSpawn "~/bin/tootch.sh")               -- %! Toggle bluetooth
   -- wireless toggle seems to be hardware-level
   -- settings
-  , ("<XF86Tools>", emacs (Edit "~/txt/gtd/projects.org"))       -- %! Jump to GTD
-  , ("S-<XF86Tools>", emacs (Edit "~/.xmonad/xmonad.hs"))        -- %! Edit WM configuration
-  , ("S-C-<XF86Tools>", emacs (Edit "~/.emacs.d/init.el"))       -- %! Edit Editor configuration
+  , ("<XF86Tools>", emacs (Edit "~/txt/gtd/projects.org"))           -- %! Jump to GTD
+  , ("S-<XF86Tools>", emacs (Edit "~/.xmonad/xmonad.hs"))            -- %! Edit WM configuration
+  , ("S-C-<XF86Tools>", emacs (Edit "~/.emacs.d/init.el"))           -- %! Edit Editor configuration
 
   -- search
-  , ("<XF86Search>",         brainzo ["radio", "seek"])           -- %! Seek radio
-  , ("S-<XF86Search>",       brainzo ["radio", "kees"])           -- %! Reverse seek radio
-  , ("C-<XF86Search>",       brainzo ["radio", "np"])             -- %! Display radio now--playing
-  ,("S-C-<XF86Search>",      brainzo ["radio", "off"])            -- %! Turn off radio
-
-  -- , ("<XF86Search>",             shell $ BR.seek b)              -- %! Seek radio
-  -- , ("S-<XF86Search>",           shell $ BR.kees b)              -- %! Reverse seek radio
-  -- , ("C-<XF86Search>",           shell $ BR.np b)                -- %! Display radio now--playing
-  -- , ("S-C-<XF86Search>",         shell BR.off)                   -- %! Turn off radio
+  , ("<XF86Search>",         brainzo ["radio", "seek"])              -- %! Seek radio
+  , ("S-<XF86Search>",       brainzo ["radio", "kees"])              -- %! Reverse seek radio
+  , ("C-<XF86Search>",       brainzo ["radio", "np"])                -- %! Display radio now--playing
+  , ("S-C-<XF86Search>",      brainzo ["radio", "off"])               -- %! Turn off radio
 
   -- window list
-  , ("<XF86LaunchA>", unsafeSpawn "~/bin/batteries | ~/bin/osd") -- %! Show battery state
-  , ("M-r", shellPrompt promptConfig)                            -- %! Shell prompt
-  , ("C-M-r", prompt "~/.local/bin/b" promptConfig)              -- %! Brainzo prompt
-  , ("S-M-r", xmonadPrompt promptConfig)                         -- %! Xmonad prompt
+  , ("<XF86LaunchA>", unsafeSpawn "~/bin/batteries | ~/bin/osd")     -- %! Show battery state
+  , ("M-r", shellPrompt promptConfig)                                -- %! Shell prompt
+  , ("C-M-r", prompt "~/.local/bin/b" promptConfig)                  -- %! Brainzo prompt
+  , ("S-M-r", xmonadPrompt promptConfig)                             -- %! Xmonad prompt
   -- exposé
-  , ("<XF86Explorer>", emacs (Edit "~/txt/gtd/projects.org"))    -- %! Edit projects org file
-  , ("<Print>", screenshot All)                                  -- %! Take a screenshot
-  , ("S-<Print>", screenshot Sel)                                -- %! Screenshot window or rectangle
-  , ("C-S-<Pause>", safeSpawn "systemctl" ["suspend"])           -- %! suspend
-  , ("<XF86Sleep>", safeSpawn "systemctl" ["suspend"])           -- %! suspend
+  , ("<XF86Explorer>", brainzo ["np", "display"])                    -- %! Show what's playing
+  , ("<Print>", screenshot All)                                      -- %! Take a screenshot
+  , ("S-<Print>", screenshot Sel)                                    -- %! Screenshot window or rectangle
+  , ("C-S-<Pause>", safeSpawn "systemctl" ["suspend"])               -- %! suspend
+  , ("<XF86Sleep>", safeSpawn "systemctl" ["suspend"])               -- %! suspend
   ]
 
 promptConfig = def
@@ -157,23 +152,29 @@ promptConfig = def
 fading = composeAll
   [isUnfocused                                   --> transparency 0.1
   , className =? "google-chrome"                 --> opaque
+  , className =? "firefox"                       --> opaque
   , className =? "vlc" <||> className =? "cvlc"  --> opaque
   , className =? "mplayer"                       --> opaque
   , className =? "Kodi"                          --> opaque
+  , className =? "xtailjournal"                  --> opaque
   , fmap not isUnfocused                         --> opaque
   ]
 
 homeDesktops = composeAll
-   [ className =? "Kodi" --> doShift "4"]
+   [ className =? "Kodi" --> doShift "4"
+   , className =? "xtailjournal" --> doShift "9"
+   ]
+
 
 main :: IO ()
-main = do -- brainzo all happens in Shell, so hop in there
+main = do
   -- b <- Brainzo.birth
   let mykeys x = extraKeys x `M.union` keys def x -- extraKeys b x `M.union` keys def x
   let conf = def
              { modMask = mod4Mask
-             , normalBorderColor  = "#777777"
-             , focusedBorderColor = "#000000"
+             , borderWidth = 2
+             , normalBorderColor  = "#333333"
+             , focusedBorderColor = "#777777"
              , keys = mykeys
              , layoutHook = layout
              , manageHook = homeDesktops
