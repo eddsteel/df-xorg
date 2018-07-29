@@ -88,7 +88,7 @@ toggleFS = do
 extraKeys = (flip mkKeymap)
   [ ("S-M-e", showMeEmacs)
   , ("S-C-e", run "~/.emacs_anywhere/bin/run")                       -- %! Edit selection in Emacs
-  , ("S-M-w", showMe "firefox-developer-edition" [])                 -- %! Show chromium
+  , ("S-M-w", showMe "firefox" [])                                   -- %! Show chromium
   , ("S-M-g", showMe "firefox" ["www.netflix.com"])                  -- %! Show chrome (multimedia extensions)
   , ("S-M-k", showMe "kodi" [])
   , ("S-M-p", run "dmenu_run")                                       -- %! Run dmenu_run
@@ -96,8 +96,8 @@ extraKeys = (flip mkKeymap)
   , ("S-M-f", toggleFS)                                              -- %! Toggle fullscreen
   , ("S-M-<Escape>", sendMessage ToggleStruts)                       -- %! Toggle panel display
   , ("M-`", windows focusDown)                                       -- %! Move focus to the next window
-  , ("S-C-M-<Left>", sendToScreen 0)                                 -- %! Move focused window to previous display
-  , ("S-C-M-<Right>", sendToScreen 1)                                -- %! Move focused window to next display
+--  , ("S-C-M-<Left>", sendToScreen 0)                                 -- %! Move focused window to previous display
+--  , ("S-C-M-<Right>", sendToScreen 1)                                -- %! Move focused window to next display
   -- FUNCTION KEYS
   -- audio
   , ("<XF86AudioMute>",          brainzo ["audio", "mute"])          -- %! Mute/Unmute sound
